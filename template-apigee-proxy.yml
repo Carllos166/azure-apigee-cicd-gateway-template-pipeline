@@ -32,11 +32,11 @@ stages:
               COMMIT_BRANCH: $(COMMIT_BRANCH)
 
   - stage: Test_Lint
-      displayName: "Test"
-      jobs:
-        - job: Apigeelint
-          displayName: "Test"
-          steps:
+    displayName: "Test"
+    jobs:
+      - job: Apigeelint
+        displayName: "Test"
+        steps:
             # install node.js tools and dependencies.
             - task: NodeTool@0
               inputs:
@@ -181,7 +181,7 @@ stages:
 
               LATEST_VERSION=$(curl -s "https://apigee.googleapis.com/v1/organizations/$APIGEE_ORG/apis/$API_NAME/revisions" \
                 --header "Authorization: Bearer $BEARER_TOKEN" \
-                --header "Accept: application/json" | jq -r ".[-1]")
+                --header "Accept: application/json" | jq -r '.[] | tonumber' | sort -n | tail -1)
 
               RESPONSE=$(curl -s "https://apigee.googleapis.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis/$API_NAME/revisions/$LATEST_VERSION/deployments" \
                 --header "Authorization: Bearer $(BEARER_TOKEN)" \
